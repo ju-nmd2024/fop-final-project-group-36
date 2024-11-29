@@ -5,6 +5,13 @@ let speedY = 0;
 let gravity = 0.1;
 let state = "start";
 speed = 5;
+let starX = 400;
+let starY = 100; 
+let starSpeedY = 3;
+let starSpeedX = 4;
+let paddleX = 100;
+let paddleY = 500;
+let paddleSpeed = 5;
 
 function setup() {
   createCanvas(800, 700);
@@ -37,12 +44,12 @@ function startScreen() {
   noStroke();
   fill(244, 207, 105);
 
-  // Draw the star
+  // Draw the star > chat
   beginShape();
-  let points = 5; // 5 points for a simple star
-  let radius1 = 100; // Outer radius of the star
-  let radius2 = 40; // Inner radius of the star
-  let angle = -PI / points; // Angle between each point of the star
+  let points = 5;
+  let radius1 = 100; 
+  let radius2 = 40; 
+  let angle = -PI / points; 
 
   for (let i = 0; i < points * 2; i++) {
     // Alternate between outer and inner points
@@ -60,22 +67,39 @@ function gameScreen() {
 
   push();
   fill(233, 123, 191);
-  rect(x + 241, y + 428, 90, 20, 20);
+  rect(paddleX, paddleY, 90, 20, 20);
 
   if (keyIsDown(37)) {
-    x = x - speed;
+    paddleX -= paddleSpeed;
   } else if (keyIsDown(39)) {
-    x = x + speed;
+    paddleX += paddleSpeed;
   }
   pop();
 
-  speedY += gravity;
+  starX += starSpeedX;
+  starY += starSpeedY;
+  
+  if (y > height || x < 0 || x > width) {
+    crash = true;
+  }
 
+  if (starY <= 0) {
+    starspeedY = -starSpeedY;
+  }
+  if (starY >= height) {
+    starSpeedY = -starSpeedY;
+  }
+
+  if (starX <= 0 || starX >= width) {
+    starSpeedX = -starSpeedX;
+  }
+
+  }
   x += speedX;
   y += speedY;
 
   fill(244, 207, 105);
-  drawStar(x + 200, y + 200, 30, 15, 5);
+  drawStar(starX, starY + 200, 30, 15, 5);
   function drawStar(x, y, radius1, radius2, npoints) {
     let angle = TWO_PI / npoints;
     let halfAngle = angle / 2.0;
@@ -92,7 +116,7 @@ function gameScreen() {
     }
     endShape(CLOSE);
   }
-}
+
 
 function resultScreen() {
   if (state === "You died!") {
