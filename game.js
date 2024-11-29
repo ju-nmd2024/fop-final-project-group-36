@@ -4,17 +4,33 @@ let speedX = 0;
 let speedY = 0;
 let gravity = 0.1;
 let state = "start";
-speed = 5;
+let speed = 5;
 let starX = 400;
-let starY = 100; 
+let starY = 400; 
 let starSpeedY = 3;
 let starSpeedX = 4;
 let paddleX = 100;
-let paddleY = 500;
+let paddleY = 600;
 let paddleSpeed = 5;
+let rotation = 0;
+let lives = 3;
+let score = 0;
+let bricks = [];
+
+//brick dimensions
+let brickWidth = 60;
+let brickHeight = 20;
+let rows = 7;
+let cols = 8;
 
 function setup() {
-  createCanvas(800, 700);
+  createCanvas(600, 700);
+
+  for (let i = 0; i < cols; i ++) {
+    for (let j = 0; j < rows; j++ ) {
+      bricks.push ({ x: i * (brickWidth + 10) + 30, y: j * (brickHeight + 5) + 30, isHit: false});
+    }
+  }
 }
 
 function draw() {
@@ -65,6 +81,12 @@ function startScreen() {
 function gameScreen() {
   background(0, 0, 0);
 
+  //lives and scores
+  textSize (20);
+  fill (233,123,191);
+  text ("Lives: " + lives, 20, height - 20);
+  text ("Score: " + score, width - 120, height - 20);
+
   push();
   fill(233, 123, 191);
   rect(paddleX, paddleY, 90, 20, 20);
@@ -78,31 +100,41 @@ function gameScreen() {
 
   starX += starSpeedX;
   starY += starSpeedY;
+
+  if (starX > width || starX < 0) {
+    starSpeedX *= -1;
+  }
+  if (starY > height) {
+    lives--;
+    if (lives <= 0) {
+      state = "You died!";
+    } else {
+      resetBall();
+    }
+  }
+  if (starY > 0) {
+    starSpeedY *= -1;
+  }
+
+  if (starY + 15 > paddleY && starY + 15 < paddleY + 20 && starX > paddleX && starX < paddleX + 90) {
+    starSpeedY *= -1;
+    let bounceOffCenter = (starX - (paddleX + 45)) / 45;
+    starSpeedX += bounceOffCenter * 2;
+  }
   
-  if (y > height || x < 0 || x > width) {
-    crash = true;
-  }
+  starX = starX + Math.cos(rotation) * speed;
+  starY = starY + Math.sin(rotation) * speed;
 
-  if (starY <= 0) {
-    starspeedY = -starSpeedY;
-  }
-  if (starY >= height) {
-    starSpeedY = -starSpeedY;
-  }
-
-  if (starX <= 0 || starX >= width) {
-    starSpeedX = -starSpeedX;
-  }
-
-  }
   x += speedX;
   y += speedY;
 
   fill(244, 207, 105);
-  drawStar(starX, starY + 200, 30, 15, 5);
-  function drawStar(x, y, radius1, radius2, npoints) {
+  drawStar(starX, starY, 30, 15, 5);
+  function drawStar(x, y, radius1, radius2, npoints,rotation) {
     let angle = TWO_PI / npoints;
     let halfAngle = angle / 2.0;
+
+    rotation += 0.05;
 
     beginShape();
 
@@ -116,7 +148,7 @@ function gameScreen() {
     }
     endShape(CLOSE);
   }
-
+}
 
 function resultScreen() {
   if (state === "You died!") {
