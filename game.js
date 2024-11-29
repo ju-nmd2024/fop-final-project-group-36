@@ -1,5 +1,8 @@
 let x = 100;
 let y = 100;
+let speedX = 0;
+let speedY = 0;
+let gravity = 0.1;
 let state = "start";
 speed = 5;
 
@@ -54,9 +57,9 @@ function startScreen() {
 
 function gameScreen() {
   background(0, 0, 0);
-  textSize(90);
-  fill(233, 123, 191);
 
+  push();
+  fill(233, 123, 191);
   rect(x + 241, y + 428, 90, 20, 20);
 
   if (keyIsDown(37)) {
@@ -64,13 +67,21 @@ function gameScreen() {
   } else if (keyIsDown(39)) {
     x = x + speed;
   }
-  push();
+  pop();
+
+  speedY += gravity;
+
+  x += speedX;
+  y += speedY;
+
+  fill(244, 207, 105);
   drawStar(x + 200, y + 200, 30, 15, 5);
   function drawStar(x, y, radius1, radius2, npoints) {
     let angle = TWO_PI / npoints;
     let halfAngle = angle / 2.0;
 
     beginShape();
+
     for (let a = -PI / 2; a < TWO_PI; a += angle) {
       let sx = x + cos(a) * radius2;
       let sy = y + sin(a) * radius2;
@@ -80,9 +91,7 @@ function gameScreen() {
       vertex(sx, sy);
     }
     endShape(CLOSE);
-    pop();
   }
-  
 }
 
 function resultScreen() {
