@@ -1,18 +1,11 @@
 let x = 100;
 let y = 100;
-let speedX = 0;
-let speedY = 0;
 let gravity = 0.1;
 let state = "start";
 let speed = 5;
-let starX = 400;
-let starY = 400;
-let starSpeedY = 3;
-let starSpeedX = 4;
 let paddleX = 100;
 let paddleY = 600;
 let paddleSpeed = 5;
-let rotation = 0;
 let lives = 3;
 let score = 0;
 let bricks = [];
@@ -23,113 +16,6 @@ let brickWidth = 60;
 let brickHeight = 20;
 let rows = 7;
 let cols = 8;
-
-function setup() {
-  createCanvas(600, 750);
-
-  for (let i = 0; i < cols; i++) {
-    for (let j = 0; j < rows; j++) {
-      bricks.push({
-        x: i * (brickWidth + 10) + 30,
-        y: j * (brickHeight + 5) + 30,
-        isHit: false,
-      });
-    }
-  }
-}
-
-function draw() {
-  if (state === "start") {
-    startScreen();
-  } else if (state === "game") {
-    gameScreen();
-  } else if (state === "You died!" || state === "You win!") {
-    resultScreen();
-  }
-}
-
-function startScreen() {
-  background(103, 127, 191);
-  textSize(90);
-  fill(233, 123, 191);
-  textFont("Starborn");
-  text("Star Dash", x + 100, y);
-  textSize(40);
-  text("click to start", x + 200, y + 400);
-}
-
-function gameScreen() {
-  background(0, 0, 0);
-
-  //lives and scores
-  textSize(20);
-  fill(233, 123, 191);
-  text("Lives: " + lives, 20, height - 20);
-  text("Score: " + score, width - 120, height - 20);
-
-  push();
-  fill(233, 123, 191);
-  rect(paddleX, paddleY, 90, 20, 20);
-
-  if (keyIsDown(37)) {
-    paddleX -= paddleSpeed;
-  } else if (keyIsDown(39)) {
-    paddleX += paddleSpeed;
-  }
-  pop();
-
-  starX += starSpeedX;
-  starY += starSpeedY;
-
-  if (starX > width || starX < 0) {
-    starSpeedX *= -1;
-  }
-  if (starY > height) {
-    lives--;
-    if (lives <= 0) {
-      state = "You died!";
-    } else {
-      resetBall();
-    }
-  }
-  if (starY > 0) {
-    starSpeedY *= -1;
-  }
-
-  if (
-    starY + 15 > paddleY &&
-    starY + 15 < paddleY + 20 &&
-    starX > paddleX &&
-    starX < paddleX + 90
-  ) {
-    starSpeedY *= -1;
-    let bounceOffCenter = (starX - (paddleX + 45)) / 45;
-    starSpeedX += bounceOffCenter * 2;
-  }
-
-  for (let i = 0; i < bricks.length; i++) {
-    let brick = bricks[i];
-    if (
-      !brick.isHit &&
-      starX > brick.x &&
-      starX < brick.x + brickWidth &&
-      starY > brick.y &&
-      starY < brick.y + brickHeight
-    ) {
-      brick.isHit = true;
-      starSpeedY *= -1;
-      score += 10;
-    }
-  }
-  //bricks
-  for (let i = 0; i < bricks.length; i++) {
-    let brick = bricks[i];
-    if (!brick.isHit) {
-      fill(175, 238, 238);
-      rect(brick.x, brick.y, brickWidth, brickHeight);
-    }
-  }
-}
 
 class Star {
   constructor(){
@@ -190,6 +76,106 @@ class Star {
   }
 }
 
+let star = new Star ();
+
+function setup() {
+  createCanvas(600, 750);
+
+  for (let i = 0; i < cols; i++) {
+    for (let j = 0; j < rows; j++) {
+      bricks.push({
+        x: i * (brickWidth + 10) + 30,
+        y: j * (brickHeight + 5) + 30,
+        isHit: false,
+      });
+    }
+  }
+}
+
+function draw() {
+  if (state === "start") {
+    startScreen();
+  } else if (state === "game") {
+    gameScreen();
+  } else if (state === "You died!" || state === "You win!") {
+    resultScreen();
+  }
+}
+
+function startScreen() {
+  background(103, 127, 191);
+  textSize(90);
+  fill(233, 123, 191);
+  textFont("Starborn");
+  text("Star Dash", x + 100, y);
+  textSize(40);
+  text("click to start", x + 200, y + 400);
+}
+
+function gameScreen() {
+  background(0, 0, 0);
+
+  //lives and scores
+  textSize(20);
+  fill(233, 123, 191);
+  text("Lives: " + lives, 20, height - 20);
+  text("Score: " + score, width - 120, height - 20);
+
+  push();
+  fill(233, 123, 191);
+  rect(paddleX, paddleY, 90, 20, 20);
+
+  if (keyIsDown(37)) {
+    paddleX -= paddleSpeed;
+  } else if (keyIsDown(39)) {
+    paddleX += paddleSpeed;
+  }
+  pop();
+
+  star.update();
+
+  if (star.y + star.radius > height) {
+    lives--;
+    if (lives <= 0) {
+      state = "You died!";
+    } else {
+      star.reset ();
+    }
+  }
+
+  //star collision
+if (star.y + star.radius > paddleY &&
+  star.y + star.radius < paddleY + 20 &&
+  star.x > paddleX &&
+  star.x < paddleX + 90) {
+    star.speed.y *= -1;
+    let bounceOffCenter = (star.x - (paddleX + 45)) / 45;
+    star.speed.x += bounceOffCenter * 2;
+  }
+
+  //brick collision
+  for (let i = 0; i <bricks.length; i++) {
+    let brick = bricks [i];
+    if (!brick.isHit && star.x > brick.x && star.x < brick.x + brickWidth && star.y > brick.y && star.y < brick.y + brickHeight) {
+      brick.isHit = true;
+      star.speed.y *= -1;
+      score += 10;
+    }
+  }
+
+  //draw bricks
+  for (let i = 0; i < bricks.length; i++) {
+    let brick = bricks[i];
+    if (!brick.isHit) {
+      fill(175, 238, 238);
+      rect(brick.x, brick.y, brickWidth, brickHeight);
+    }
+  }
+
+  //draw star
+  star.drawStar (star.x, star.y, star.radius / 2, star.radius,5);
+  }
+
 
 
 
@@ -210,10 +196,7 @@ function resultScreen() {
 }
 
 function resetBall() {
-  starX = width / 2;
-  starY = height / 2;
-  starSpeedX = random(2, 4);
-  starSpeedY = 4;
+  star.reset (); 
 }
 
 function mouseClicked() {
