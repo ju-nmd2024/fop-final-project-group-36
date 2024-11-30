@@ -114,6 +114,13 @@ function draw() {
 
 function startScreen() {
   background(13, 19, 38);
+
+for (let i = 0; i < 100; i ++) {
+  let starX = random(width;
+  let starY = random ()
+  )
+}
+
   textSize(90);
   fill(233, 123, 191);
   textFont("Orbitron");  
