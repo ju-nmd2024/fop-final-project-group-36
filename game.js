@@ -6,7 +6,7 @@ let gravity = 0.1;
 let state = "start";
 let speed = 5;
 let starX = 400;
-let starY = 400; 
+let starY = 400;
 let starSpeedY = 3;
 let starSpeedX = 4;
 let paddleX = 100;
@@ -24,11 +24,15 @@ let rows = 7;
 let cols = 8;
 
 function setup() {
-  createCanvas(600, 700);
+  createCanvas(600, 750);
 
-  for (let i = 0; i < cols; i ++) {
-    for (let j = 0; j < rows; j++ ) {
-      bricks.push ({ x: i * (brickWidth + 10) + 30, y: j * (brickHeight + 5) + 30, isHit: false});
+  for (let i = 0; i < cols; i++) {
+    for (let j = 0; j < rows; j++) {
+      bricks.push({
+        x: i * (brickWidth + 10) + 30,
+        y: j * (brickHeight + 5) + 30,
+        isHit: false,
+      });
     }
   }
 }
@@ -51,41 +55,16 @@ function startScreen() {
   text("Star Dash", x + 100, y);
   textSize(40);
   text("click to start", x + 200, y + 400);
-
-  // Set the center of the canvas
-  translate(x + 600 / 2, y + 400 / 2);
-
-  rotate(-PI / 2);
-  // Set stroke color for the star
-  noStroke();
-  fill(244, 207, 105);
-
-  // Draw the star > chat
-  beginShape();
-  let points = 5;
-  let radius1 = 100; 
-  let radius2 = 40; 
-  let angle = -PI / points; 
-
-  for (let i = 0; i < points * 2; i++) {
-    // Alternate between outer and inner points
-    let radius = i % 2 === 0 ? radius1 : radius2;
-    let x = radius * cos(i * angle);
-    let y = radius * sin(i * angle);
-    vertex(x, y);
-  }
-
-  endShape(CLOSE);
 }
 
 function gameScreen() {
   background(0, 0, 0);
 
   //lives and scores
-  textSize (20);
-  fill (233,123,191);
-  text ("Lives: " + lives, 20, height - 20);
-  text ("Score: " + score, width - 120, height - 20);
+  textSize(20);
+  fill(233, 123, 191);
+  text("Lives: " + lives, 20, height - 20);
+  text("Score: " + score, width - 120, height - 20);
 
   push();
   fill(233, 123, 191);
@@ -116,38 +95,65 @@ function gameScreen() {
     starSpeedY *= -1;
   }
 
-  if (starY + 15 > paddleY && starY + 15 < paddleY + 20 && starX > paddleX && starX < paddleX + 90) {
+  if (
+    starY + 15 > paddleY &&
+    starY + 15 < paddleY + 20 &&
+    starX > paddleX &&
+    starX < paddleX + 90
+  ) {
     starSpeedY *= -1;
     let bounceOffCenter = (starX - (paddleX + 45)) / 45;
     starSpeedX += bounceOffCenter * 2;
   }
-  
-  starX = starX + Math.cos(rotation) * speed;
-  starY = starY + Math.sin(rotation) * speed;
 
-  x += speedX;
-  y += speedY;
-
-  fill(244, 207, 105);
-  drawStar(starX, starY, 30, 15, 5);
-  function drawStar(x, y, radius1, radius2, npoints,rotation) {
-    let angle = TWO_PI / npoints;
-    let halfAngle = angle / 2.0;
-
-    rotation += 0.05;
-
-    beginShape();
-
-    for (let a = -PI / 2; a < TWO_PI; a += angle) {
-      let sx = x + cos(a) * radius2;
-      let sy = y + sin(a) * radius2;
-      vertex(sx, sy);
-      sx = x + cos(a + halfAngle) * radius1;
-      sy = y + sin(a + halfAngle) * radius1;
-      vertex(sx, sy);
+  for (let i = 0; i < bricks.length; i++) {
+    let brick = bricks[i];
+    if (
+      !brick.isHit &&
+      starX > brick.x &&
+      starX < brick.x + brickWidth &&
+      starY > brick.y &&
+      starY < brick.y + brickHeight
+    ) {
+      brick.isHit = true;
+      starSpeedY *= -1;
+      score += 10;
     }
-    endShape(CLOSE);
   }
+  //bricks
+  for (let i = 0; i < bricks.length; i++) {
+    let brick = bricks[i];
+    if (!brick.isHit) {
+      fill(175, 238, 238);
+      rect(brick.x, brick.y, brickWidth, brickHeight);
+    }
+  }
+
+  //star
+  fill(244, 207, 105);
+  drawStar(starX, starY, 30, 15, 5, rotation);
+
+  rotation += 0.03;
+}
+function drawStar(x, y, radius1, radius2, npoints, rotation) {
+  let angle = TWO_PI / npoints;
+  let halfAngle = angle / 2.0;
+
+  push();
+  translate(x, y);
+  rotate(rotation);
+
+  beginShape();
+  for (let a = -PI / 2; a < TWO_PI; a += angle) {
+    let sx = x + cos(a) * radius2;
+    let sy = y + sin(a) * radius2;
+    vertex(sx, sy);
+    sx = x + cos(a + halfAngle) * radius1;
+    sy = y + sin(a + halfAngle) * radius1;
+    vertex(sx, sy);
+  }
+  endShape(CLOSE);
+  pop();
 }
 
 function resultScreen() {
@@ -166,6 +172,13 @@ function resultScreen() {
   }
 }
 
+function resetBall() {
+  starX = width / 2;
+  starY = height / 2;
+  starSpeedX = random(2, 4);
+  starSpeedY = 4;
+}
+
 function mouseClicked() {
   if (state === "start") {
     state = "game";
@@ -173,5 +186,8 @@ function mouseClicked() {
     state = "You died!";
   } else if (state === "you died!" || state === "You win!") {
     state = "game";
+    lives = 3;
+    score = 0;
+    bricks.forEach((brick) => (brick.isHit = false));
   }
 }
