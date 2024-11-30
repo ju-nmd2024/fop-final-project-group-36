@@ -16,6 +16,7 @@ let rotation = 0;
 let lives = 3;
 let score = 0;
 let bricks = [];
+let starRadius =12;
 
 //brick dimensions
 let brickWidth = 60;
@@ -128,33 +129,69 @@ function gameScreen() {
       rect(brick.x, brick.y, brickWidth, brickHeight);
     }
   }
-
-  //star
-  fill(244, 207, 105);
-  drawStar(starX, starY, 30, 15, 5, rotation);
-
-  rotation += 0.03;
 }
-function drawStar(x, y, radius1, radius2, npoints, rotation) {
-  let angle = TWO_PI / npoints;
-  let halfAngle = angle / 2.0;
 
-  push();
-  translate(x, y);
-  rotate(rotation);
-
-  beginShape();
-  for (let a = -PI / 2; a < TWO_PI; a += angle) {
-    let sx = x + cos(a) * radius2;
-    let sy = y + sin(a) * radius2;
-    vertex(sx, sy);
-    sx = x + cos(a + halfAngle) * radius1;
-    sy = y + sin(a + halfAngle) * radius1;
-    vertex(sx, sy);
+class Star {
+  constructor(){
+    this.x = width /2;
+    this.y = height -30;
+    this.speed = createVector (3,-3);
+    this.radius = starRadius;
   }
-  endShape(CLOSE);
-  pop();
+  update(){
+    this.x += this.speed.x;
+    this.y += this.speed.y;
+
+    if (this.x - this.radius < 0 || this.x + this.radius > width){
+      this.speed.x *= -1;
+    }
+
+    if (this.y - this.radius <0){
+      this.speed.y *= -1;
+    }
+  }
+
+  drawStar(x, y, radius1, radius2, npoints) {
+    let angle = TWO_PI / npoints;
+    let halfAngle = angle / 2.0;
+  
+    beginShape();
+    for (let a = -PI / 2; a < TWO_PI; a += angle) {
+      let sx = x + cos(a) * radius2;
+      let sy = y + sin(a) * radius2;
+      vertex(sx, sy);
+      sx = x + cos(a + halfAngle) * radius1;
+      sy = y + sin(a + halfAngle) * radius1;
+      vertex(sx, sy);
+    }
+    endShape(CLOSE);
+  }
+
+  checkPaddleCollision(paddle) {
+    if(this.y + this.radius >= paddle.y && this.x >= paddle.x && this.x <= paddle.x + paddle.width) {
+      this.speed.y *= -1;
+
+      this.speed.x *= 1.1;
+      this.speed.y *= 1.1;
+    }
+  }
+
+  checkBrickCollision(brick){
+    if (this.x> brick.x && this.x < brick.x + brickWidth && this.y - this.radius < brick.y + brickHeight && this.y + this.radius > brick.y){
+      this.speed.y *= -1;
+      return true;
+    }
+    return false;
+  }
+  reset (){
+    this.x = width /2;
+    this.y = height -30;
+    this.speed = createVector(3,-3);
+  }
 }
+
+
+
 
 function resultScreen() {
   if (state === "You died!") {
