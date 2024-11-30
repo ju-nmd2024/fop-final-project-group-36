@@ -116,9 +116,12 @@ function startScreen() {
   background(13, 19, 38);
 
 for (let i = 0; i < 100; i ++) {
-  let starX = random(width;
-  let starY = random ()
-  )
+  let starX = random(width);
+  let starY = random (height);
+  let starSize = random (1,3);
+  fill (225);
+  noStroke();
+  ellipse(starX,starY,starSize, starSize);
 }
 
   textSize(90);
