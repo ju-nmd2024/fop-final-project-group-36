@@ -114,7 +114,7 @@ function draw() {
     startScreen();
   } else if (state === "game") {
     gameScreen();
-  } else if (state === "You died!" || state === "You win!") {
+  } else if (state === "You died!") {
     resultScreen();
   }
 }
@@ -154,7 +154,7 @@ function gameScreen() {
   
   //lives and scores
   textSize(20);
-  fill(201, 211, 242);
+  fill(233, 123, 191);
   text("Lives: " + lives, 20, height - 20);
   text("Score: " + score, width - 120, height - 20);
 
@@ -224,11 +224,18 @@ function gameScreen() {
 
 function resultScreen() {
   if (state === "You died!") {
-    background(233, 123, 191);
+    background(13, 19, 38);
     textSize(90);
+    
     fill(233, 123, 191);
     textFont("Starborn");
-    text("Game over!", x, y+300);
+    text("Game over!", x-20, y+200);
+
+    textSize(40);
+    text ("Your score: " + score, x+70, y+300);
+
+    textSize (20);
+    text ("Click to play again", x+110, y+350);
 
   }
 
@@ -241,13 +248,21 @@ function resetBall() {
 function mouseClicked() {
   if (state === "start") {
     state = "game";
-  } else if (state === "game") {
-    state = "You died!";
-  } else if (state === "you died!" || state === "You win!") {
+  } else if (state === "You died!") {
     state = "game";
     lives = 3;
     score = 0;
     bricks.forEach((brick) => (brick.isHit = false));
+    resetGame();
   }
+}
+
+function resetGame () {
+paddleX = 100;
+paddleY = 600;
+lives = 3;
+score = 0;
+bricks.forEach((brick) => (brick.isHit = false));
+star.reset();
 }
   
