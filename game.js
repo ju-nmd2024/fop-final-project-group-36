@@ -1,3 +1,10 @@
+//the star
+//https://chatgpt.com/share/674f03cb-4440-800d-8b9f-d6139484a540
+// we had help with the brick and paddle collison from a friend named lars
+
+
+
+
 let x = 100;
 let y = 100;
 let gravity = 0.1;
@@ -8,13 +15,13 @@ let paddleY = 600;
 let paddleSpeed = 5;
 let lives = 3;
 let score = 0;
-let bricks = [];
+let bricks = []; 
 let starRadius = 12;
 
-
-//brick dimensions
+ 
+//brick dimensions 
 let brickWidth = 60;
-let brickHeight = 20;
+let brickHeight = 20; 
 let rows = 7;
 let cols = 8;
 
@@ -24,7 +31,7 @@ class Star {
     this.y = height - 30;
     this.speed = createVector(3, -3);
     this.radius = starRadius;
-  }
+  } 
   update() {
     this.x += this.speed.x;
     this.y += this.speed.y;
@@ -124,13 +131,13 @@ for (let i = 0; i < 100; i ++) {
   ellipse(starX,starY,starSize, starSize);
 }
 
-  textSize(90);
+  textSize(120);
   fill(233, 123, 191);
   textFont("Orbitron");  
-  text("stardash", x + 100, y);
+  text("stardash", x + 10, y+300);
   
-  textSize(30);
-  text("click to start", x + 150, y + 500);
+  textSize(20);
+  text("click to start", x + 160, y + 350);
 
 }
 
@@ -142,6 +149,7 @@ function gameScreen() {
       stars.push (new Star(random(width),random(height),random(2,5)));
     }
   }
+  
   
   
   //lives and scores
@@ -216,18 +224,14 @@ function gameScreen() {
 
 function resultScreen() {
   if (state === "You died!") {
-    background(3, 90, 1);
+    background(233, 123, 191);
     textSize(90);
     fill(233, 123, 191);
     textFont("Starborn");
-    text("You died!", x + 100, y);
-  } else if (state === "You win!") {
-    background(3, 90, 1);
-    textSize(90);
-    fill(233, 123, 191);
-    textFont("Starborn");
-    text("You win!", x + 100, y);
+    text("Game over!", x, y+300);
+
   }
+
 }
 
 function resetBall() {
@@ -246,4 +250,4 @@ function mouseClicked() {
     bricks.forEach((brick) => (brick.isHit = false));
   }
 }
- 
+  
