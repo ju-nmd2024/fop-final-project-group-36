@@ -10,9 +10,6 @@ let y = 100;
 let gravity = 0.1;
 let state = "start";
 let speed = 5;
-let paddleX = 100;
-let paddleY = 600;
-let paddleSpeed = 5;
 let lives = 3;
 let score = 0;
 let bricks = []; 
@@ -105,7 +102,46 @@ class Star {
   }
 }
 
+class Paddle {
+  constructor (x,y, width, height, speed) {
+    this.x=x;
+    this.y=y;
+    this.width= width;
+    this.height= height;
+    this.speed= speed;
+  }
+  update () {
+    if (keyIsDown (37)) {
+      this.x -= this.speed;
+    } else if (keyIsDown (39)) {
+      this.x += this.speed;
+    }
+
+    this.x = constrain(this.x, 0, width - this.width);
+  }
+
+  draw() {
+    fill (233,133,191);
+    noStroke();
+    rect(this.x, this.y, this.width, this.height, 20);
+  }
+
+  checkCollision(star) {
+    if (
+      star.y + star.radius > this.y &&
+      star.y + star.radius < this.y + this.height &&
+      star.x > this.x &&
+      star.x < this.x + this.width
+    ) {
+      star.speed.y *= -1;
+      let bounceOffCenter = (star.x - (this.x + this.width / 2)) / (this.width / 2);
+      star.speed.x += bounceOffCenter * 2;
+    }
+  }
+}
+
 let star = new Star();
+let paddle = new Paddle (100,600,90,20,5);
 
 function setup() {
   createCanvas(600, 750);
@@ -170,18 +206,11 @@ function gameScreen() {
   text("Lives: " + lives, 20, height - 20);
   text("Score: " + score, width - 120, height - 20);
 
-  push();
-  fill(233, 123, 191);
-  rect(paddleX, paddleY, 90, 20, 20);
+  paddle.update();
+  paddle.draw();
 
-  if (keyIsDown(37)) {
-    paddleX -= paddleSpeed;
-  } else if (keyIsDown(39)) {
-    paddleX += paddleSpeed;
-  }
-  pop();
   noStroke();
-  star.update();
+  star.update ();
 
   if (star.y + star.radius > height) {
     lives--;
@@ -192,17 +221,7 @@ function gameScreen() {
     }
   }
 
-  //star collision
-  if (
-    star.y + star.radius > paddleY &&
-    star.y + star.radius < paddleY + 20 &&
-    star.x > paddleX &&
-    star.x < paddleX + 90
-  ) {
-    star.speed.y *= -1;
-    let bounceOffCenter = (star.x - (paddleX + 45)) / 45;
-    star.speed.x += bounceOffCenter * 2;
-  }
+  paddle.checkCollision(star);
 
   //brick collision
   for (let i = 0; i < bricks.length; i++) {
@@ -270,8 +289,7 @@ function mouseClicked() {
 }
 
 function resetGame () {
-paddleX = 100;
-paddleY = 600;
+paddle = new Paddle(100,600,90,20,5);
 lives = 3;
 score = 0;
 bricks.forEach((brick) => (brick.isHit = false));
