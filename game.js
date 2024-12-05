@@ -18,12 +18,24 @@ let score = 0;
 let bricks = []; 
 let starRadius = 12;
 
- 
+  
 //brick dimensions 
 let brickWidth = 60;
 let brickHeight = 20; 
 let rows = 7;
 let cols = 8;
+
+let stars = [];
+for (let i = 0; i < 100; i ++) {
+  const star = {
+    starX : random(width),
+    starY :random (height),
+    starSize : random (1,3),
+  
+  };
+stars.push(star);
+  console.log(stars.length);
+}
 
 class Star {
   constructor() {
@@ -143,11 +155,11 @@ for (let i = 0; i < 100; i ++) {
 
 function gameScreen() {
   background(13, 19, 38);
-
-  function createStars(){
-    for (let i = o; i < 100; i ++){
-      stars.push (new Star(random(width),random(height),random(2,5)));
-    }
+  
+  for (let star of stars) {
+    fill (225,225,255);
+  noStroke();
+  ellipse(star.starX, star.starY, star.starSize, star.starSize);
   }
   
   
@@ -235,7 +247,7 @@ function resultScreen() {
     text ("Your score: " + score, x+70, y+300);
 
     textSize (20);
-    text ("Click to play again", x+110, y+350);
+    text ("Click to play again", x+120, y+350);
 
   }
 
