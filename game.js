@@ -6,7 +6,6 @@
 //variables
 let x = 100;
 let y = 100;
-let gravity = 0.1;
 let state = "start";
 let speed = 5;
 let lives = 3;
@@ -27,7 +26,7 @@ for (let i = 0; i < 100; i ++) {
   const star = {
     starX : random(width),
     starY :random (height),
-    starSize : random (2),
+    starSize : random (5),
   
   };
 stars.push(star);
