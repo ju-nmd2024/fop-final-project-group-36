@@ -27,7 +27,7 @@ for (let i = 0; i < 100; i ++) {
   const star = {
     starX : random(width),
     starY :random (height),
-    starSize : random (1,3),
+    starSize : random (2),
   
   };
 stars.push(star);
@@ -197,8 +197,6 @@ function gameScreen() {
   noStroke();
   ellipse(star.starX, star.starY, star.starSize, star.starSize);
   }
-  
-  
   
   //lives and scores
   textSize(20);
