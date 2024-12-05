@@ -1,10 +1,9 @@
 //the star
 //https://chatgpt.com/share/674f03cb-4440-800d-8b9f-d6139484a540
-// we had help with the brick and paddle collison from a friend named lars
+// we had help with the brick and paddle collision from a friend named Lars.
+// we had help with the background stars on the startscreen and gamescreen from a teaching assistant in class.
 
-
-
-
+//variables
 let x = 100;
 let y = 100;
 let gravity = 0.1;
@@ -22,6 +21,7 @@ let brickHeight = 20;
 let rows = 7;
 let cols = 8;
 
+//background stars
 let stars = [];
 for (let i = 0; i < 100; i ++) {
   const star = {
@@ -34,6 +34,7 @@ stars.push(star);
   console.log(stars.length);
 }
 
+//the star 
 class Star {
   constructor() {
     this.x = width / 2;
@@ -102,6 +103,7 @@ class Star {
   }
 }
 
+// paddle
 class Paddle {
   constructor (x,y, width, height, speed) {
     this.x=x;
@@ -110,6 +112,7 @@ class Paddle {
     this.height= height;
     this.speed= speed;
   }
+  //key movements
   update () {
     if (keyIsDown (37)) {
       this.x -= this.speed;
@@ -119,7 +122,7 @@ class Paddle {
 
     this.x = constrain(this.x, 0, width - this.width);
   }
-
+// paddle
   draw() {
     fill (233,133,191);
     noStroke();
@@ -170,6 +173,7 @@ function draw() {
 function startScreen() {
   background(13, 19, 38);
 
+ //background stars
 for (let i = 0; i < 100; i ++) {
   let starX = random(width);
   let starY = random (height);
@@ -178,7 +182,7 @@ for (let i = 0; i < 100; i ++) {
   noStroke();
   ellipse(starX,starY,starSize, starSize);
 }
-
+// text
   textSize(120);
   fill(233, 123, 191);
   textFont("Orbitron");  
@@ -192,6 +196,7 @@ for (let i = 0; i < 100; i ++) {
 function gameScreen() {
   background(13, 19, 38);
   
+  //background star
   for (let star of stars) {
     fill (225,225,255);
   noStroke();
