@@ -20,6 +20,46 @@ let brickHeight = 20;
 let rows = 7;
 let cols = 8;
 
+// paddle
+class Paddle {
+  constructor (x,y, width, height, speed) {
+    this.x=x;
+    this.y=y;
+    this.width= width;
+    this.height= height;
+    this.speed= speed;
+  }
+  //key movements
+  update () {
+    if (keyIsDown (37)) {
+      this.x -= this.speed;
+    } else if (keyIsDown (39)) {
+      this.x += this.speed;
+    }
+
+    this.x = constrain(this.x, 0, width - this.width);
+  }
+// paddle
+  draw() {
+    fill (233,133,191);
+    noStroke();
+    rect(this.x, this.y, this.width, this.height, 20);
+  }
+
+  checkCollision(star) {
+    if (
+      star.y + star.radius > this.y &&
+      star.y + star.radius < this.y + this.height &&
+      star.x > this.x &&
+      star.x < this.x + this.width
+    ) {
+      star.speed.y *= -1;
+      let bounceOffCenter = (star.x - (this.x + this.width / 2)) / (this.width / 2);
+      star.speed.x += bounceOffCenter * 2;
+    }
+  }
+}
+
 //background stars
 let stars = [];
 for (let i = 0; i < 100; i ++) {
@@ -102,51 +142,11 @@ class Star {
   }
 }
 
-// paddle
-class Paddle {
-  constructor (x,y, width, height, speed) {
-    this.x=x;
-    this.y=y;
-    this.width= width;
-    this.height= height;
-    this.speed= speed;
-  }
-  //key movements
-  update () {
-    if (keyIsDown (37)) {
-      this.x -= this.speed;
-    } else if (keyIsDown (39)) {
-      this.x += this.speed;
-    }
-
-    this.x = constrain(this.x, 0, width - this.width);
-  }
-// paddle
-  draw() {
-    fill (233,133,191);
-    noStroke();
-    rect(this.x, this.y, this.width, this.height, 20);
-  }
-
-  checkCollision(star) {
-    if (
-      star.y + star.radius > this.y &&
-      star.y + star.radius < this.y + this.height &&
-      star.x > this.x &&
-      star.x < this.x + this.width
-    ) {
-      star.speed.y *= -1;
-      let bounceOffCenter = (star.x - (this.x + this.width / 2)) / (this.width / 2);
-      star.speed.x += bounceOffCenter * 2;
-    }
-  }
-}
-
 let star = new Star();
-let paddle = new Paddle (100,600,90,20,5);
+let paddle = new Paddle(100,600,90,20,5);
 
 function setup() {
-  const canvas = createCanvas(600, 750);
+  var canvas = createCanvas(600, 750);
   canvas.parent("myCanvas");
 
   for (let i = 0; i < cols; i++) {
@@ -213,7 +213,7 @@ function gameScreen() {
   paddle.draw();
 
   noStroke();
-  star.update ();
+  star.update();
 
   if (star.y + star.radius > height) {
     lives--;
