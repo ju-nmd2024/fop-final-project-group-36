@@ -62,16 +62,17 @@ class Paddle {
 
 //background stars
 let stars = [];
-for (let i = 0; i < 100; i ++) {
-  const star = {
-    starX : random(width),
-    starY :random (height),
-    starSize : random (5),
+
+function draw() {
+  background(0);
   
-  };
-stars.push(star);
-  console.log(stars.length);
+  // Draw all the stars
+  for (let i = 0; i < stars.length; i++) {
+    const star = stars[i];
+    ellipse(star.starX, star.starY, star.starSize, star.starSize);
+  }
 }
+
 
 //the star 
 class Star {
@@ -148,8 +149,20 @@ let paddle = new Paddle(100,600,90,20,5);
 function setup() {
   var canvas = createCanvas(600, 750);
   canvas.parent("myCanvas");
-  randomValue = random(100);
-  console.log(randomValue);
+
+  createCanvas(400, 400);
+  
+  // Generate 100 stars with random values
+  for (let i = 0; i < 100; i++) {
+    const star = {
+      starX: random(width),    // Random x-coordinate
+      starY: random(height),   // Random y-coordinate
+      starSize: random(1, 5),  // Random size between 1 and 5
+    };
+    stars.push(star);  // Add the star to the stars array
+  }
+
+  console.log(stars.length);  // Check how many stars have been created
 
   for (let i = 0; i < cols; i++) {
     for (let j = 0; j < rows; j++) {
