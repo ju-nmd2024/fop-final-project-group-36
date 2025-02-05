@@ -147,7 +147,7 @@ let paddle = new Paddle (100,600,90,20,5);
 
 function setup() {
   const canvas = createCanvas(600, 750);
-  canvas.parent ("myCanvas");
+  canvas.parent("myCanvas");
 
   for (let i = 0; i < cols; i++) {
     for (let j = 0; j < rows; j++) {
