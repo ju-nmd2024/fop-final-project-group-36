@@ -177,9 +177,9 @@ function startScreen() {
 
  //background stars
 for (let i = 0; i < 100; i ++) {
-  let starX = randomValue(width);
-  let starY = randomValue (height);
-  let starSize = randomValue (1,3);
+  let starX = random(width);
+  let starY = random (height);
+  let starSize = random (1,3);
   fill (225);
   noStroke();
   ellipse(starX,starY,starSize, starSize);
